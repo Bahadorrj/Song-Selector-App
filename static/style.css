@@ -1,0 +1,235 @@
+/* Root variables */
+:root {
+  --main-color: #0c0c0c;
+  --secondary-color: #481e14;
+  --contrast-color: #9b3922;
+  --lighter-contrast-color: #f2613f;
+  --text-color: #fce2b1;
+  --darker-text-color: #3f331c;
+  --accent-color: #2d4b73;
+  --darker-accent-color: #1e344f;
+  --card-bg: #1a1a1a;
+  --hover-glow: #f2613f33;
+}
+
+/* Reset some default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set a pleasant background color and font for the entire page */
+body {
+  background-color: var(
+    --main-color
+  ); /* This will override the previous background color */
+  font-family: Arial, sans-serif;
+  color: var(--text-color);
+}
+
+main {
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Container styles */
+.songs-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+/* Song card styles */
+.song-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--secondary-color);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.song-card.active {
+  background-color: var(--lighter-contrast-color);
+  color: var(--card-bg);
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.song-card.active .song-composer {
+  color: var(--card-bg);
+}
+
+.song-card.active .song-title {
+  color: var(--darker-text-color);
+}
+
+.song-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--hover-glow);
+  border-color: var(--accent-color);
+}
+
+/* Song cover image */
+.song-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 2px solid var(--accent-color);
+  transition: border-color 0.3s ease;
+}
+
+.song-card:hover .song-cover {
+  border-color: var(--lighter-contrast-color);
+}
+
+/* Song information */
+.song-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.song-composer {
+  color: var(--lighter-contrast-color);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.song-title {
+  color: var(--text-color);
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Audio player styles */
+audio {
+  width: 100%;
+  height: 30px;
+  margin-top: 0.3rem;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.username {
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent-color);
+}
+
+.submit-button {
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background-color: var(--text-color);
+  color: var(--main-color);
+  border: 1px solid var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: var(--lighter-contrast-color);
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .songs-container {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 300px));
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .song-card {
+    padding: 0.8rem;
+  }
+}
+
+/* Centering the main container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full height of the viewport */
+  padding: 20px;
+}
+
+/* Styling for the thank you section */
+.thank-you-section {
+  background-color: white;
+  border-radius: 8px;
+  background-color: var(
+    --main-color
+  ); /* This will override the previous background color */
+  padding: 40px;
+  text-align: center;
+}
+
+/* Main heading style */
+.thank-you-section h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: var(--lighter-contrast-color); /* Green color for emphasis */
+}
+
+/* Paragraph styling */
+.thank-you-section p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  line-height: 1.5; /* Improved line spacing */
+}
+
+/* Back button styling */
+.back-button {
+  display: inline-block;
+  padding: 12px 20px;
+  background-color: var(--accent-color); /* Bootstrap primary color */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+/* Back button hover effect */
+.back-button:hover {
+  background-color: var(--darker-accent-color); /* Darker blue on hover */
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .thank-you-section {
+    padding: 20px; /* Reduce padding on smaller screens */
+  }
+
+  .thank-you-section h1 {
+    font-size: 2rem; /* Smaller font size for mobile */
+  }
+
+  .thank-you-section p {
+    font-size: 1rem; /* Adjust paragraph size for mobile */
+  }
+}

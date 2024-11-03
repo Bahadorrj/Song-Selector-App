@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You!</title>
+    <link
+      rel="stylesheet"
+      href="{{  url_for('static', filename = 'style.css') }}"
+    />
+  </head>
+  <body>
+    <main class="container">
+      <section class="thank-you-section">
+        <h1>Thank You, {{ user }}!</h1>
+        <p>Your selection of "{{ song_title }}" has been recorded.</p>
+        <a href="{{ url_for('main.index') }}" class="back-button"
+          >Back to Song Selection</a
+        >
+      </section>
+    </main>
+  </body>
+</html>
