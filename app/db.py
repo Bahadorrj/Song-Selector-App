@@ -1,34 +1,33 @@
-import sqlite3
 import click
-
-from flask import current_app, g
+from flask import g, current_app
 from flask.cli import with_appcontext
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+
+db = SQLAlchemy()
 
 
 def get_db():
     if "db" not in g:
-        g.db = sqlite3.connect(
-            current_app.config["DATABASE"], detect_types=sqlite3.PARSE_DECLTYPES
-        )
-        g.db.row_factory = sqlite3.Row
-
+        g.db = db
     return g.db
-
-
-def close_db(e=None):
-    db = g.pop("db", None)
-
-    if db is not None:
-        db.close()
 
 
 def init_db():
     db = get_db()
 
-    with current_app.open_resource("schema.sql") as f:
-        db.executescript(f.read().decode("utf8"))
-    with current_app.open_resource("seed.sql") as f:
-        db.executescript(f.read().decode("utf8"))
+    try:
+        # Execute schema and seed files
+        with current_app.open_resource("schema.sql") as f:
+            db.session.execute(text(f.read().decode("utf8")))
+        with current_app.open_resource("seed.sql") as f:
+            db.session.execute(text(f.read().decode("utf8")))
+        # Commit the changes
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        click.echo(f"Error initializing database: {str(e)}", err=True)
+        raise
 
 
 @click.command("init-db")
@@ -40,7 +39,5 @@ def init_db_command():
 
 
 def init_app(app):
-    # tell Flask to call that function when cleaning up after returning the response
-    app.teardown_appcontext(close_db)
-    # add a new command that can be called with the flask command
+    db.init_app(app)
     app.cli.add_command(init_db_command)

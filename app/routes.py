@@ -1,7 +1,7 @@
 from collections import defaultdict
-import sqlite3
 import mimetypes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from sqlalchemy import text
 from app.db import get_db
 
 mimetypes.add_type("audio/mpeg", ".mp3")
@@ -13,7 +13,7 @@ bp = Blueprint("main", __name__)
 @bp.route("/")
 def index():
     db = get_db()
-    songs = db.execute("SELECT * FROM Songs").fetchall()
+    songs = db.session.execute(text("SELECT * FROM Songs")).fetchall()
     return render_template("index.html", songs=songs)
 
 
@@ -34,28 +34,32 @@ def success():
         db = get_db()
         try:
             # Insert the response into the database
-            db.execute(
-                "INSERT INTO Responds (username, song_id) VALUES (?, ?)",
-                (username, song_id),
+            db.session.execute(
+                text(
+                    "INSERT INTO Responds (username, song_id) VALUES (:username, :song_id)"
+                ),
+                {"username": username, "song_id": song_id},
             )
-            db.commit()
+            db.session.commit()
 
             # Get the song title for the thank you page
-            song = db.execute(
-                "SELECT title FROM Songs WHERE id = ?", (song_id,)
+            song = db.session.execute(
+                text("SELECT title FROM Songs WHERE id = :song_id"),
+                {"song_id": song_id},
             ).fetchone()
 
             # Redirect to thank you page with the username and song title
             return render_template(
                 "success.html",
                 user=username,
-                song_title=song["title"] if song else "selected song",
+                song_title=song[0] if song else "selected song",
             )
 
-        except sqlite3.Error as e:
+        except Exception as e:
             # If there's a database error, redirect back to index
-            flash(f"An error occurred: {str(e)}")
-            return redirect(url_for("main.index"))
+            raise e
+            # flash(f"An error occurred: {str(e)}")
+            # return redirect(url_for("main.index"))
 
     # If someone tries to access success page directly, redirect to index
     return redirect(url_for("main.index"))
@@ -63,18 +67,15 @@ def success():
 
 @bp.route("/responses", methods=["GET"])
 def get_responses():
-    conn = get_db()
-    cursor = conn.cursor()
+    db = get_db()
 
-    cursor.execute("SELECT * FROM Responds")
-    responds = cursor.fetchall()
-    responds_data = [dict(row) for row in responds]
+    # Get all responses and songs using SQLAlchemy
+    responds = db.session.execute(text("SELECT * FROM Responds")).fetchall()
+    songs = db.session.execute(text("SELECT * FROM Songs")).fetchall()
 
-    cursor.execute("SELECT * FROM Songs")
-    songs = cursor.fetchall()
-    songs_data = [dict(row) for row in songs]
-
-    conn.close()
+    # Convert results to dictionaries
+    responds_data = [dict(row._mapping) for row in responds]
+    songs_data = [dict(row._mapping) for row in songs]
 
     counter = defaultdict(int)
     for respond in responds_data:
