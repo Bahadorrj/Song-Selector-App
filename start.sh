@@ -6,4 +6,4 @@ set -o errexit
 flask --app app init-db
 
 # Start the Flask app
-python run.py
+gunicorn "app:create_app()"
