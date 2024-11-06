@@ -18,6 +18,7 @@ def create_db_url() -> URL:
         return None
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-SQLALCHEMY_DATABASE_URI = create_db_url()
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+class Config:
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    SQLALCHEMY_DATABASE_URI = create_db_url()
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
