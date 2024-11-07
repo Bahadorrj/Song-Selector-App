@@ -15,19 +15,11 @@ def get_db():
 
 def init_db():
     db = get_db()
-    # Check if table exists using PostgreSQL's information_schema
-    result = db.session.execute(
-        text(
-            "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'Songs')"
-        )
-    ).scalar()
-    if result:
-        return
     try:
         # Execute schema and seed files
-        with current_app.open_resource("schema.sql") as f:
+        with current_app.open_resource("static/sql/schema.sql") as f:
             db.session.execute(text(f.read().decode("utf8")))
-        with current_app.open_resource("seed.sql") as f:
+        with current_app.open_resource("static/sql/seed.sql") as f:
             db.session.execute(text(f.read().decode("utf8")))
         # Commit the changes
         db.session.commit()

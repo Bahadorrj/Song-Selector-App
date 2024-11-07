@@ -2,7 +2,7 @@ from collections import defaultdict
 import mimetypes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import text
-from app.db import get_db
+from db import get_db
 
 mimetypes.add_type("audio/mpeg", ".mp3")
 mimetypes.add_type("audio/wav", ".wav")

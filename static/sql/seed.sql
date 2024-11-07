@@ -1,5 +1,3 @@
-BEGIN TRANSACTION;
--- Table: Songs
 INSERT INTO Songs (
         title,
         composer,
